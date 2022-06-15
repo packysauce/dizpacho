@@ -134,31 +134,6 @@ fn dizpacho_method(
     // last segment is the function segment
     let fn_segment = path.segments.pop().unwrap().into_tuple().0;
 
-    // in #[dizpacho(std::ops::Deref<Output=usize>::deref < THESE GENERICS > )],
-    // look at the generics
-    sig.generics = if let PathArguments::AngleBracketed(AngleBracketedGenericArguments {
-        lt_token,
-        args,
-        gt_token,
-        ..
-    }) = fn_segment.arguments
-    {
-        let params = args
-            .iter()
-            .map(generic_arg_to_param)
-            .collect::<Result<Punctuated<GenericParam, _>>>()?;
-        Generics {
-            lt_token: Some(lt_token),
-            params,
-            gt_token: Some(gt_token),
-            where_clause: None,
-        }
-    } else {
-        Generics::default()
-    };
-
-    // let's steal all the bindings first, then we can put it back together
-
     let mut generics: Vec<GenericArgument> = vec![];
     let mut assoc_types: Vec<ImplItemType> = vec![];
 
@@ -248,9 +223,6 @@ fn dizpacho_method(
 
 #[proc_macro_attribute]
 pub fn dizpacho(attr: TokenStream, item: TokenStream) -> TokenStream {
-    // look at the thing we got:
-    // if it's an (associated) function, just do the ol renamer-ooski
-    // if it's a method, replace the thing and carry on
     let item = &item;
     let result = match syn::parse::<ItemImpl>(item.clone()) {
         Ok(imp) => dizpacho_impl(attr, imp),

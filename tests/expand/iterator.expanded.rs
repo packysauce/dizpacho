@@ -25,7 +25,10 @@ impl MyCollection {
     }
 }
 impl std::iter::Extend<i32> for MyCollection {
-    fn extend<T>(&mut self, iter: T) {
+    fn extend<T>(&mut self, iter: T)
+    where
+        T: IntoIterator<Item = i32>,
+    {
         <MyCollection>::extend(self, iter)
     }
 }

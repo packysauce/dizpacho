@@ -1,6 +1,7 @@
 #[derive(Debug)]
 struct MyCollection(Vec<i32>);
 
+#[allow(dead_code)]
 #[dizpacho::dizpacho]
 impl MyCollection {
     fn new() -> MyCollection {
@@ -12,11 +13,15 @@ impl MyCollection {
     }
 
     #[dizpacho(std::iter::Extend<i32>::extend<T>)]
-    fn extend<T>(&mut self, iter: T) {
-        todo!()
+    fn extend<T>(&mut self, iter: T)
+    where
+        T: IntoIterator<Item = i32>,
+    {
+        self.0.extend(iter)
     }
 }
 
+#[allow(dead_code)]
 fn main() {
     let mut c = MyCollection::new();
 
