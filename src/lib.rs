@@ -24,11 +24,14 @@
 //! struct OtherThing;
 //!
 //! #[dizpacho::dizpacho]
-//! impl OtherThing {
-//!     #[dizpacho(std::ops::Deref<Output = str>)]
+//! impl TooLazyToType {
+//!     #[dizpacho(std::ops::Deref<Target = str>::deref)]
 //!     fn as_str(&self) -> &str {
 //!         &self.0
 //!     }
+//! }
+//! #[dizpacho::dizpacho]
+//! impl OtherThing {
 //!
 //!     /// You can even do generics!
 //!     #[dizpacho(From<Self>::from for TooLazyToType)]
@@ -146,7 +149,7 @@ fn generic_arg_to_param(arg: &GenericArgument) -> Result<GenericParam> {
 ///
 /// #[dizpacho]
 /// impl MyStruct {
-/// #[dizpacho(std::ops::Deref<Target=usize>::deref )]
+/// #[dizpacho(std::ops::Deref<Target=usize>::deref)]
 /// fn make_thingy(&self) -> &usize { &self.0 }
 /// # }
 /// ```
@@ -251,7 +254,7 @@ fn dizpacho_method(
         .inputs
         .iter_mut()
         .map::<Result<Expr>, _>(|arg| match arg {
-            FnArg::Receiver(rec) => parse2(quote!(#rec)),
+            FnArg::Receiver(_rec) => parse2(quote!(self)),
             FnArg::Typed(ref mut arg) => {
                 if *arg.ty == syn::parse(quote!(Self).into())? {
                     *arg.ty = self_ty.clone();
