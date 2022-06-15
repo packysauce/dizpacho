@@ -9,9 +9,8 @@ use syn::spanned::Spanned;
 use syn::token::Comma;
 use syn::GenericArgument;
 use syn::{
-    parenthesized, parse2, AngleBracketedGenericArguments, Binding, Error, Expr, ExprCall, FnArg,
-    GenericParam, Generics, ImplItemType, ItemImpl, Path, PathArguments, Result, Signature, Token,
-    Type, WhereClause,
+    parenthesized, parse2, Binding, Error, Expr, ExprCall, FnArg, Generics, ImplItemType, ItemImpl,
+    Path, PathArguments, Result, Signature, Token, Type, WhereClause,
 };
 
 // (could) looks like #[dizpacho(std::convert::From<Self>::default<'a>)]
@@ -79,22 +78,6 @@ fn dizpacho_impl(_attr: TokenStream, mut imp: ItemImpl) -> syn::Result<TokenStre
         }
     }
     Ok(output)
-}
-
-fn generic_arg_to_param(arg: &GenericArgument) -> Result<GenericParam> {
-    match arg {
-        GenericArgument::Lifetime(life) => syn::parse(quote!(#life).into()),
-        GenericArgument::Type(ty) => Ok(GenericParam::Type(syn::parse(quote!(#ty).into())?)),
-        GenericArgument::Binding(_bind) => Err(syn::Error::new_spanned(
-            arg.to_token_stream(),
-            "type binding not supported here",
-        )),
-        GenericArgument::Constraint(_) => todo!(),
-        GenericArgument::Const(_c) => Err(syn::Error::new_spanned(
-            arg.to_token_stream(),
-            "const not supported here",
-        )),
-    }
 }
 
 /// Handles fn-like things (so method or associated function) within an impl
