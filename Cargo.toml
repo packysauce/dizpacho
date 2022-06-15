@@ -1,10 +1,17 @@
 [package]
 name = "dizpacho"
+description = "Less boilerplate for implementing traits"
 authors = [
     "Patrick White <1275985+packysauce@users.noreply.github.com>"
 ]
 version = "0.1.0"
+homepage = "https://crates.io/dizpacho"
+repository = "https://github.com/packysauce/dizpacho"
 edition = "2021"
+readme = "README.md"
+keywords = ["macro", "impl", "trait", "dispatch", "decorator"]
+categories = ["rust-patterns"]
+license = "MIT OR Apache-2.0"
 
 [lib]
 proc-macro = true
