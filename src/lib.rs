@@ -6,19 +6,39 @@
 //!
 //! ```rust
 //! struct TooLazyToType(String);
+//! struct OtherThing;
 //!
 //! #[dizpacho::dizpacho]
 //! impl TooLazyToType {
+//!     /// Just call my new() function for default!
 //!     #[dizpacho(Default::default)]
 //!     fn new() -> Self {
 //!         Self("howdy!".to_string())
 //!     }
 //! }
-//!
 //! assert_eq!(&TooLazyToType::default().0, "howdy!");
-//!
 //! ```
-//! fn ma
+//!
+//! ```rust
+//! struct TooLazyToType(String);
+//! struct OtherThing;
+//!
+//! #[dizpacho::dizpacho]
+//! impl OtherThing {
+//!     #[dizpacho(std::ops::Deref<Output = str>)]
+//!     fn as_str(&self) -> &str {
+//!         &self.0
+//!     }
+//!
+//!     /// You can even do generics!
+//!     #[dizpacho(From<Self>::from for TooLazyToType)]
+//!     fn from_other(thing: OtherThing) -> TooLazyToType {
+//!         TooLazyToType("I came from the other thing!".to_string())
+//!     }
+//! }
+//!
+//! assert!(TooLazyToType::from(OtherThing).0.ends_with("thing!"))
+//! ```
 
 use proc_macro::TokenStream;
 use proc_macro2::TokenStream as TokenStream2;
